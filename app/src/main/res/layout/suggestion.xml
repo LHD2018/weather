@@ -26,7 +26,7 @@
             android:layout_margin="15dp"
             android:textColor="#fff"/>
         <TextView
-            android:id="@+id/car_wash_text"
+            android:id="@+id/drsg_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="180dp"
     android:padding="10dp"
-    android:background="#28FFDA">
+    android:background="@drawable/head_bg">
     <ImageView
         android:id="@+id/now_weather_pic"
         android:layout_width="wrap_content"
