@@ -9,26 +9,17 @@ import interfaces.heweather.com.interfacesmodule.bean.weather.lifestyle.Lifestyl
 import interfaces.heweather.com.interfacesmodule.bean.weather.now.Now;
 
 public class AddedCity extends LitePalSupport {
-    private int id;
+    private String name;
     private Weather nowWeather;
     private Forecast forecast;
-    private Lifestyle lifestyle;
     private AirNow airNow;
 
-    public AirNow getAirNow() {
-        return airNow;
+    public String getName() {
+        return name;
     }
 
-    public void setAirNow(AirNow airNow) {
-        this.airNow = airNow;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Weather getNowWeather() {
@@ -47,11 +38,11 @@ public class AddedCity extends LitePalSupport {
         this.forecast = forecast;
     }
 
-    public Lifestyle getLifestyle() {
-        return lifestyle;
+    public AirNow getAirNow() {
+        return airNow;
     }
 
-    public void setLifestyle(Lifestyle lifestyle) {
-        this.lifestyle = lifestyle;
+    public void setAirNow(AirNow airNow) {
+        this.airNow = airNow;
     }
 }

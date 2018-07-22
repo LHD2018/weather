@@ -30,6 +30,12 @@ public class HotCityAdapter extends RecyclerView.Adapter<HotCityAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.hotcity_item,parent,false);
         ViewHolder holder=new ViewHolder(view);
+        holder.hotCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //搜索
+            }
+        });
         return holder;
     }
 

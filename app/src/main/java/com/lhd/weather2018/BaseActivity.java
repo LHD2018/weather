@@ -5,17 +5,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import interfaces.heweather.com.interfacesmodule.view.HeConfig;
+
 public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Button backButton=findViewById(R.id.back);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        String userId="HE1807171032311823";
+        String key="24a2d899122b4526b7299924f133c599";
+        HeConfig.init(userId,key);
+        HeConfig.switchToFreeServerNode();
+
     }
 }

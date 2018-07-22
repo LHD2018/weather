@@ -5,26 +5,26 @@
     android:padding="10dp"
     android:background="@drawable/head_bg">
     <ImageView
-        android:id="@+id/now_weather_pic"
+        android:id="@+id/nav_weather_pic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"/>
     <TextView
-        android:id="@+id/title_update_time"
+        android:id="@+id/nav_update_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:textColor="#fff"
         android:textSize="14sp"/>
     <TextView
-        android:id="@+id/title_city"
+        android:id="@+id/nav_city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/title_update_time"
         android:textColor="#fff"
         android:textSize="20sp"/>
     <TextView
-        android:id="@+id/weather_info_text"
+        android:id="@+id/nav_weather_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

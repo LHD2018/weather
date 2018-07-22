@@ -1,10 +1,16 @@
 package com.lhd.weather2018;
 
+import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.ColorSpace;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,11 +23,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lhd.weather2018.database.AddedCity;
 
 import org.litepal.LitePal;
+import org.litepal.tablemanager.Connector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import interfaces.heweather.com.interfacesmodule.bean.weather.Weather;
@@ -51,6 +60,9 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String userId="HE1807171032311823";
+        String key="24a2d899122b4526b7299924f133c599";
+        HeConfig.init(userId,key);
         weatherLayout=findViewById(R.id.weather_layout);
         titleCity=findViewById(R.id.title_city);
         titleUpdeateTime=findViewById(R.id.title_update_time);
@@ -66,11 +78,18 @@ public class MainActivity extends BaseActivity {
         swipeRefresh=findViewById(R.id.swipe_refresh);
         drawerLayout=findViewById(R.id.drawer_layout);
         navView=findViewById(R.id.nav_view);
-        String userId="HE1807171032311823";
-        String key="24a2d899122b4526b7299924f133c599";
-        HeConfig.init(userId,key);
-        HeConfig.switchToFreeServerNode();
         currentCity= LitePal.findFirst(AddedCity.class);
+        List<String> permissionList=new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
+            permissionList.add(Manifest.permission.READ_PHONE_STATE);
+        }
+        if (ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+            permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (!permissionList.isEmpty()){
+            String[] permissions=permissionList.toArray(new String[permissionList.size()]);
+            ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
+        }
         if (currentCity!=null){
             showWeather(currentCity);
         }else{
@@ -87,6 +106,8 @@ public class MainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId=item.getItemId();
                 if (itemId== R.id.manager_cities){
+                    Intent intent=new Intent(MainActivity.this,ManageCityActivity.class);
+                    startActivity(intent);
 
                 }
                 if (itemId== R.id.setting){
@@ -99,6 +120,26 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 1:
+                if (grantResults.length>0){
+                    for (int result:grantResults){
+                        if (result!=PackageManager.PERMISSION_GRANTED){
+                            Toast.makeText(this,"你需要同意这些权限",Toast.LENGTH_SHORT).show();
+                            finish();
+                            return;
+                        }
+                    }
+                }
+                break;
+                default:
+                    break;
+        }
+    }
+
     private void showWeather(AddedCity currentCity){
         String cityName=currentCity.getNowWeather().getBasic().getLocation();
         String updateTime=currentCity.getNowWeather().getUpdate().getLoc();
