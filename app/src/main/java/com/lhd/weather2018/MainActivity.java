@@ -1,11 +1,12 @@
 package com.lhd.weather2018;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.ColorSpace;
-import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -13,8 +14,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,20 +27,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lhd.weather2018.database.AddedCity;
+import com.lhd.weather2018.database.ForecastWeather;
+import com.lhd.weather2018.util.Utility;
 
 import org.litepal.LitePal;
-import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import interfaces.heweather.com.interfacesmodule.bean.weather.Weather;
-import interfaces.heweather.com.interfacesmodule.bean.weather.forecast.ForecastBase;
-import interfaces.heweather.com.interfacesmodule.bean.weather.lifestyle.LifestyleBase;
-import interfaces.heweather.com.interfacesmodule.view.HeConfig;
-
 public class MainActivity extends BaseActivity {
     private AddedCity currentCity;
+    private String currentCityName;
     private ScrollView weatherLayout;
     private TextView titleCity;
     private TextView titleUpdeateTime;
@@ -60,9 +58,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String userId="HE1807171032311823";
-        String key="24a2d899122b4526b7299924f133c599";
-        HeConfig.init(userId,key);
         weatherLayout=findViewById(R.id.weather_layout);
         titleCity=findViewById(R.id.title_city);
         titleUpdeateTime=findViewById(R.id.title_update_time);
@@ -78,7 +73,15 @@ public class MainActivity extends BaseActivity {
         swipeRefresh=findViewById(R.id.swipe_refresh);
         drawerLayout=findViewById(R.id.drawer_layout);
         navView=findViewById(R.id.nav_view);
-        currentCity= LitePal.findFirst(AddedCity.class);
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //更新数据
+                showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
+            }
+        });
+        currentCityName= Utility.getCurrentCity(this);
         List<String> permissionList=new ArrayList<>();
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.READ_PHONE_STATE);
@@ -90,8 +93,8 @@ public class MainActivity extends BaseActivity {
             String[] permissions=permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
         }
-        if (currentCity!=null){
-            showWeather(currentCity);
+        if (currentCityName!=null){
+            showWeather(currentCityName);
         }else{
             drawerLayout.openDrawer(Gravity.START);
         }
@@ -122,6 +125,29 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        ActivityCollector.finishOthers();
+        ConnectivityManager manager=(ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=manager.getActiveNetworkInfo();
+        if (networkInfo.isAvailable()&&currentCityName!=null){
+            swipeRefresh.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefresh.setRefreshing(true);
+                    showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.finishAll();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case 1:
@@ -140,49 +166,38 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void showWeather(AddedCity currentCity){
-        String cityName=currentCity.getNowWeather().getBasic().getLocation();
-        String updateTime=currentCity.getNowWeather().getUpdate().getLoc();
-        String degree=currentCity.getNowWeather().getNow().getTmp();
-        String weatherInfo=currentCity.getNowWeather().getNow().getCond_txt();
+    private void showWeather(String city){
+        currentCity= LitePal.where("cityName=?",city).find(AddedCity.class).get(0);
+        String cityName=currentCity.getCityName();
+        String updateTime=currentCity.getUpdateTime();
+        String degree=currentCity.getDegree();
+        String weatherInfo=currentCity.getWeatherInfo();
         titleCity.setText(cityName);
         titleUpdeateTime.setText(updateTime);
         degreeNow.setText(degree+"°C");
         weatherInfoNow.setText(weatherInfo);
-        List<ForecastBase> forecastBaseList=currentCity.getForecast().getDaily_forecast();
+        List<ForecastWeather> forecastList=LitePal.where("cityName=?",cityName).find(ForecastWeather.class);
         forecastLayout.removeAllViews();
-        for (ForecastBase forecastBase:forecastBaseList){
+        for (ForecastWeather forecast:forecastList){
             View view= LayoutInflater.from(this).inflate(R.layout.forecast_item,forecastLayout,false);
             TextView dateText=view.findViewById(R.id.date_text);
             TextView infoText=view.findViewById(R.id.info_text);
-            TextView maxText=view.findViewById(R.id.max_text);
-            TextView minText=view.findViewById(R.id.min_text);
-            dateText.setText(forecastBase.getDate());
-            infoText.setText(forecastBase.getCond_txt_d());
-            maxText.setText(forecastBase.getTmp_max());
-            minText.setText(forecastBase.getTmp_min());
+            TextView temRange=view.findViewById(R.id.max_min);
+            dateText.setText(forecast.getDate());
+            infoText.setText(forecast.getCondText());
+            temRange.setText(forecast.getTemRange());
             forecastLayout.addView(view);
         }
-        if (currentCity.getAirNow()!=null){
-            aqiText.setText(currentCity.getAirNow().getAir_now_city().getAqi());
-            pm25Text.setText(currentCity.getAirNow().getAir_now_city().getPm25());
+        if (currentCity.getAqi()!=null){
+            aqiText.setText(currentCity.getAqi());
+            pm25Text.setText(currentCity.getPm25());
+        }else{
+            CardView aqiLayout=findViewById(R.id.aqi_layout);
+            aqiLayout.setVisibility(View.GONE);
         }
-        List<LifestyleBase> lifestyleBases=currentCity.getNowWeather().getLifestyle();
-        String comfort=null;
-        String drsg=null;
-        String sport=null;
-        for (LifestyleBase lifestyleBase:lifestyleBases){
-            if (lifestyleBase.getType().equals("comf")){
-                comfort="舒适度："+lifestyleBase.getTxt();
-            }else if (lifestyleBase.getType().equals("drsg")){
-                drsg="穿衣指数："+lifestyleBase.getTxt();
-            }else if (lifestyleBase.getType().equals("sport")){
-                sport="运动建议："+lifestyleBase.getTxt();
-            }
-            if (comfort!=null&&drsg!=null&&sport!=null){
-                break;
-            }
-        }
+        String comfort=currentCity.getComfor();
+        String drsg=currentCity.getDrsg();
+        String sport=currentCity.getSport();
         comfortText.setText(comfort);
         drsgText.setText(drsg);
         sportText.setText(sport);

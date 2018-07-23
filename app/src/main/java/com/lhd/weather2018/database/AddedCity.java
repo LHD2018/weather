@@ -9,40 +9,88 @@ import interfaces.heweather.com.interfacesmodule.bean.weather.lifestyle.Lifestyl
 import interfaces.heweather.com.interfacesmodule.bean.weather.now.Now;
 
 public class AddedCity extends LitePalSupport {
-    private String name;
-    private Weather nowWeather;
-    private Forecast forecast;
-    private AirNow airNow;
 
-    public String getName() {
-        return name;
+    private String cityName;
+    private String updateTime;
+    private String degree;
+    private String weatherInfo;
+
+    private String aqi;
+    private String pm25;
+
+    private String comfor;
+    private String drsg;
+    private String sport;
+
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
-    public Weather getNowWeather() {
-        return nowWeather;
+    public String getUpdateTime() {
+        return updateTime;
     }
 
-    public void setNowWeather(Weather nowWeather) {
-        this.nowWeather = nowWeather;
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 
-    public Forecast getForecast() {
-        return forecast;
+    public String getDegree() {
+        return degree;
     }
 
-    public void setForecast(Forecast forecast) {
-        this.forecast = forecast;
+    public void setDegree(String degree) {
+        this.degree = degree;
     }
 
-    public AirNow getAirNow() {
-        return airNow;
+    public String getWeatherInfo() {
+        return weatherInfo;
     }
 
-    public void setAirNow(AirNow airNow) {
-        this.airNow = airNow;
+    public void setWeatherInfo(String weatherInfo) {
+        this.weatherInfo = weatherInfo;
+    }
+
+    public String getAqi() {
+        return aqi;
+    }
+
+    public void setAqi(String aqi) {
+        this.aqi = aqi;
+    }
+
+    public String getPm25() {
+        return pm25;
+    }
+
+    public void setPm25(String pm25) {
+        this.pm25 = pm25;
+    }
+
+    public String getComfor() {
+        return comfor;
+    }
+
+    public void setComfor(String comfor) {
+        this.comfor = comfor;
+    }
+
+    public String getDrsg() {
+        return drsg;
+    }
+
+    public void setDrsg(String drsg) {
+        this.drsg = drsg;
+    }
+
+    public String getSport() {
+        return sport;
+    }
+
+    public void setSport(String sport) {
+        this.sport = sport;
     }
 }
