@@ -17,6 +17,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,10 +79,29 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 //更新数据
-                showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
+                if (currentCityName!=null){
+                    if (Utility.isNetworkAvailable(MainActivity.this)){
+                        showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
+                    }else{
+                        Toast.makeText(MainActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                        swipeRefresh.setRefreshing(false);
+                    }
+                }else{
+                    swipeRefresh.setRefreshing(false);
+                }
             }
         });
+
         currentCityName= Utility.getCurrentCity(this);
+        if (Utility.isNetworkAvailable(MainActivity.this)&&currentCityName!=null){
+            swipeRefresh.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefresh.setRefreshing(true);
+                    showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
+                }
+            });
+        }
         List<String> permissionList=new ArrayList<>();
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.READ_PHONE_STATE);
@@ -111,6 +131,7 @@ public class MainActivity extends BaseActivity {
                 if (itemId== R.id.manager_cities){
                     Intent intent=new Intent(MainActivity.this,ManageCityActivity.class);
                     startActivity(intent);
+                    drawerLayout.closeDrawers();
 
                 }
                 if (itemId== R.id.setting){
@@ -125,26 +146,19 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        ActivityCollector.finishOthers();
-        ConnectivityManager manager=(ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo=manager.getActiveNetworkInfo();
-        if (networkInfo.isAvailable()&&currentCityName!=null){
-            swipeRefresh.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefresh.setRefreshing(true);
-                    showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
-                }
-            });
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            this.finish();
+            return true;
         }
+        return super.onKeyDown(keyCode, event);
     }
 
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ActivityCollector.finishAll();
+    protected void onRestart() {
+        super.onRestart();
+        showWeather(Utility.getCurrentCity(MainActivity.this));
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lhd.weather2018.util.Utility;
 
@@ -43,7 +44,13 @@ public class HotCityAdapter extends RecyclerView.Adapter<HotCityAdapter.ViewHold
                 int position=holder.getAdapterPosition();
                 String city=cityList.get(position);
                 Context context=parent.getContext();
-                Utility.getWeather(context,city);
+                if (!Utility.isExist(city)){
+                    Utility.getWeather(context,city);
+                }else{
+                    Toast.makeText(context,"该地区已添加",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(context,ManageCityActivity.class);
+                    context.startActivity(intent);
+                }
             }
         });
         return holder;

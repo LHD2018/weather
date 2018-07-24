@@ -39,6 +39,20 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class AddCityActivity extends BaseActivity {
+    public static final int NONETWORK=1;
+
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case NONETWORK:
+                    Toast.makeText(AddCityActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                    break;
+                    default:
+                        break;
+            }
+        }
+    };
 
     private List<String>hotCityList=new ArrayList<>();
     private List<String>searchedCities=new ArrayList<>();
@@ -78,8 +92,15 @@ public class AddCityActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 view.setBackgroundColor(Color.BLUE);
                 String city=searchedCities.get(i).split("（")[0];
-                Utility.getWeather(AddCityActivity.this,city);
-                finish();
+                if (!Utility.isExist(city)){
+                    Utility.getWeather(AddCityActivity.this,city);
+                    finish();
+                }else{
+                    Toast.makeText(AddCityActivity.this,"该地区已添加",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(AddCityActivity.this,ManageCityActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
@@ -92,6 +113,9 @@ public class AddCityActivity extends BaseActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
+                Message message=new Message();
+                message.what=NONETWORK;
+                handler.sendMessage(message);
             }
 
             @Override
@@ -116,6 +140,9 @@ public class AddCityActivity extends BaseActivity {
             @Override
             public void onError(Throwable throwable) {
                 throwable.printStackTrace();
+                Message message=new Message();
+                message.what=NONETWORK;
+                handler.sendMessage(message);
             }
 
             @Override
