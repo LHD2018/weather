@@ -44,12 +44,16 @@ public class HotCityAdapter extends RecyclerView.Adapter<HotCityAdapter.ViewHold
                 int position=holder.getAdapterPosition();
                 String city=cityList.get(position);
                 Context context=parent.getContext();
-                if (!Utility.isExist(city)){
-                    Utility.getWeather(context,city);
+                if (Utility.isNetworkAvailable(context)){
+                    if (!Utility.isExist(city)){
+                        Utility.getWeather(context,city);
+                    }else{
+                        Toast.makeText(context,"该地区已添加",Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(context,ManageCityActivity.class);
+                        context.startActivity(intent);
+                    }
                 }else{
-                    Toast.makeText(context,"该地区已添加",Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(context,ManageCityActivity.class);
-                    context.startActivity(intent);
+                    Toast.makeText(context,"网络异常",Toast.LENGTH_SHORT).show();
                 }
             }
         });

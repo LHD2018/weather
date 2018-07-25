@@ -9,6 +9,9 @@ import android.os.ConditionVariable;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.WindowManager;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -37,11 +40,10 @@ import interfaces.heweather.com.interfacesmodule.view.HeWeather;
 
 public class Utility {
     public static final int FINISH_OK=1;
-    public static final int INTERNET_ERROR=2;
 
-    public static boolean flag1=false;
-    public static boolean flag2=false;
-    public static boolean flag3=false;
+    public static boolean flag1;
+    public static boolean flag2;
+    public static boolean flag3;
     public static List<String> handleHotCityResponce(String responce){
         List<String> list=new ArrayList<>();
         try {
@@ -113,6 +115,7 @@ public class Utility {
 
 
     public static void getWeather(final Context context, final String cityName){
+        flag1=flag2=flag3=false;
         final android.os.Handler handler = new android.os.Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -124,9 +127,6 @@ public class Utility {
                             context.startActivity(intent);
                         }
                         break;
-                    case INTERNET_ERROR:
-                        Toast.makeText(context,"网络异常",Toast.LENGTH_SHORT).show();
-                        break;
                         default:
                             break;
 
@@ -135,11 +135,10 @@ public class Utility {
         };
         final AddedCity addedCity=new AddedCity();
         HeWeather.getWeather(context, cityName, new HeWeather.OnResultWeatherDataListBeansListener() {
-            Message message=new Message();
             @Override
             public void onError(Throwable throwable) {
-                message.what=INTERNET_ERROR;
-                handler.sendMessage(message);
+                flag1=true;
+                throwable.printStackTrace();
             }
 
             @Override
@@ -155,16 +154,16 @@ public class Utility {
                 addedCity.setSport(getSport(lifestyleBaseList));
                 addedCity.save();
                 flag1=true;
+                Message message=new Message();
                 message.what=FINISH_OK;
                 handler.sendMessage(message);
             }
         });
         HeWeather.getWeatherForecast(context, cityName, new HeWeather.OnResultWeatherForecastBeanListener() {
-            Message message=new Message();
             @Override
             public void onError(Throwable throwable) {
-                message.what=INTERNET_ERROR;
-                handler.sendMessage(message);
+                flag2=true;
+                throwable.printStackTrace();
             }
 
             @Override
@@ -174,7 +173,7 @@ public class Utility {
                 for (int i=0;i<forecastBaselist.size();i++){
                     ForecastBase forecastBase=forecastBaselist.get(i);
                     ForecastWeather forecastWeather=new ForecastWeather();
-                    forecastWeather.setId(i);
+                    forecastWeather.setfId(i);
                     forecastWeather.setCityName(cityName);
                     if (i==0){
                         forecastWeather.setDate(getDate(forecastBase)+"（今天）");
@@ -191,17 +190,16 @@ public class Utility {
 
                 }
                 flag2=true;
+                Message message=new Message();
                 message.what=FINISH_OK;
                 handler.sendMessage(message);
             }
         });
         HeWeather.getAirNow(context, cityName, new HeWeather.OnResultAirNowBeansListener() {
-            Message message=new Message();
             @Override
             public void onError(Throwable throwable) {
-                message.what=INTERNET_ERROR;
-                handler.sendMessage(message);
-
+                flag3=true;
+               throwable.printStackTrace();
             }
 
             @Override
@@ -211,23 +209,29 @@ public class Utility {
                 addedCity.setPm25(airNow.getAir_now_city().getPm25());
                 addedCity.save();
                 flag3=true;
+                Message message=new Message();
                 message.what=FINISH_OK;
                 handler.sendMessage(message);
             }
         });
 
     }
+
     public static boolean setCurrentCity(Context context,String city){
         SharedPreferences.Editor editor= PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString("current_city_name",city);
         editor.apply();
         return true;
     }
+
     public static String getCurrentCity(Context context){
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString("current_city_name",null);
     }
-    public static String  updateWeather(Context context,final SwipeRefreshLayout refreshLayout){
+
+
+    public static void updateWeather(Context context, final SwipeRefreshLayout refreshLayout){
+       flag1=flag2=flag3=false;
         final android.os.Handler handler = new android.os.Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -235,8 +239,12 @@ public class Utility {
                     case FINISH_OK:
                         if (flag1&&flag2&&flag3){
                             refreshLayout.setRefreshing(false);
+
                         }
                         break;
+                    default:
+                        break;
+
                 }
             }
         };
@@ -245,6 +253,7 @@ public class Utility {
 
             @Override
             public void onError(Throwable throwable) {
+                flag1=true;
                 throwable.printStackTrace();
             }
 
@@ -264,11 +273,13 @@ public class Utility {
                 Message message=new Message();
                 message.what=FINISH_OK;
                 handler.sendMessage(message);
+
             }
         });
         HeWeather.getWeatherForecast(context, city, new HeWeather.OnResultWeatherForecastBeanListener() {
             @Override
             public void onError(Throwable throwable) {
+                flag2=true;
                 throwable.printStackTrace();
             }
 
@@ -276,8 +287,8 @@ public class Utility {
             public void onSuccess(List<Forecast> list) {
                 Forecast forecast=list.get(0);
                 List<ForecastBase> forecastBaselist=forecast.getDaily_forecast();
-                List<ForecastWeather>  idList=LitePal.where("cityName=?",city).select("id").find(ForecastWeather.class);
-                int lastId=idList.get(idList.size()-1).getId();
+                List<ForecastWeather>  idList=LitePal.where("cityName=?",city).select("fId").find(ForecastWeather.class);
+                int lastId=idList.get(idList.size()-1).getfId();
                 for (int i=0;i<forecastBaselist.size();i++){
                     ForecastBase forecastBase=forecastBaselist.get(i);
                     ForecastWeather forecastWeather=new ForecastWeather();
@@ -293,7 +304,8 @@ public class Utility {
                     forecastWeather.setCondText(getForecastInfo(forecastBase));
                     forecastWeather.setTemRange(getTemRange(forecastBase));
                     if (i<=lastId){
-                        forecastWeather.updateAll();
+                        String fId=i+"";
+                        forecastWeather.updateAll("fId=?",fId);
                     }else{
                         forecastWeather.save();
                     }
@@ -307,6 +319,7 @@ public class Utility {
         HeWeather.getAirNow(context, city, new HeWeather.OnResultAirNowBeansListener() {
             @Override
             public void onError(Throwable throwable) {
+                flag3=true;
                 throwable.printStackTrace();
 
             }
@@ -324,12 +337,6 @@ public class Utility {
                 handler.sendMessage(message);
             }
         });
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return city;
 
     }
     public static boolean isExist(String city){
@@ -355,4 +362,16 @@ public class Utility {
     }
 
 
+    public static int dp2px(Context context,float dp)
+    {
+        return (int ) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }
+
+    public static int getScreenWidth(Context context)
+    {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE );
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics( outMetrics);
+        return outMetrics .widthPixels ;
+    }
 }

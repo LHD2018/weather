@@ -31,7 +31,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="72a9d438-b809-4077-928c-09b4239043e3">
-      <console name="Connection" type="STANDARD"><![CDATA[select * from addedcity]]></console>
+      <console name="Connection" type="STANDARD"><![CDATA[select * from forecastweather]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">

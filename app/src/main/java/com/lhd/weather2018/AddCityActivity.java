@@ -92,14 +92,18 @@ public class AddCityActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 view.setBackgroundColor(Color.BLUE);
                 String city=searchedCities.get(i).split("（")[0];
-                if (!Utility.isExist(city)){
-                    Utility.getWeather(AddCityActivity.this,city);
-                    finish();
+                if (Utility.isNetworkAvailable(AddCityActivity.this)){
+                    if (!Utility.isExist(city)){
+                        Utility.getWeather(AddCityActivity.this,city);
+                        finish();
+                    }else{
+                        Toast.makeText(AddCityActivity.this,"该地区已添加",Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(AddCityActivity.this,ManageCityActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }else{
-                    Toast.makeText(AddCityActivity.this,"该地区已添加",Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(AddCityActivity.this,ManageCityActivity.class);
-                    startActivity(intent);
-                    finish();
+                    Toast.makeText(AddCityActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -3,18 +3,18 @@ package com.lhd.weather2018.database;
 import org.litepal.crud.LitePalSupport;
 
 public class ForecastWeather extends LitePalSupport {
-    private int id;
+    private int fId;
     private String cityName;
     private String date;
     private String condText;
     private String temRange;
 
-    public int getId() {
-        return id;
+    public int getfId() {
+        return fId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setfId(int fId) {
+        this.fId = fId;
     }
 
     public String getCityName() {

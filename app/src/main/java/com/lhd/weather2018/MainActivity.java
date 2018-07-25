@@ -54,12 +54,14 @@ public class MainActivity extends BaseActivity {
     private SwipeRefreshLayout swipeRefresh;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
+    private CardView aqiLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         weatherLayout=findViewById(R.id.weather_layout);
+        aqiLayout=findViewById(R.id.aqi_layout);
         titleCity=findViewById(R.id.title_city);
         titleUpdeateTime=findViewById(R.id.title_update_time);
         navButton=findViewById(R.id.nav_button);
@@ -79,9 +81,15 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 //更新数据
-                if (currentCityName!=null){
+                if (Utility.getCurrentCity(MainActivity.this)!=null){
                     if (Utility.isNetworkAvailable(MainActivity.this)){
-                        showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
+                        Utility.updateWeather(MainActivity.this,swipeRefresh);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        showWeather(Utility.getCurrentCity(MainActivity.this));
                     }else{
                         Toast.makeText(MainActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
                         swipeRefresh.setRefreshing(false);
@@ -93,15 +101,6 @@ public class MainActivity extends BaseActivity {
         });
 
         currentCityName= Utility.getCurrentCity(this);
-        if (Utility.isNetworkAvailable(MainActivity.this)&&currentCityName!=null){
-            swipeRefresh.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefresh.setRefreshing(true);
-                    showWeather(Utility.updateWeather(MainActivity.this,swipeRefresh));
-                }
-            });
-        }
         List<String> permissionList=new ArrayList<>();
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.READ_PHONE_STATE);
@@ -158,7 +157,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        showWeather(Utility.getCurrentCity(MainActivity.this));
+        currentCityName=Utility.getCurrentCity(MainActivity.this);
+        if (currentCityName!=null){
+            showWeather(currentCityName);
+        }
     }
 
     @Override
@@ -181,6 +183,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void showWeather(String city){
+        aqiLayout.setVisibility(View.VISIBLE);
         currentCity= LitePal.where("cityName=?",city).find(AddedCity.class).get(0);
         String cityName=currentCity.getCityName();
         String updateTime=currentCity.getUpdateTime();
@@ -206,7 +209,6 @@ public class MainActivity extends BaseActivity {
             aqiText.setText(currentCity.getAqi());
             pm25Text.setText(currentCity.getPm25());
         }else{
-            CardView aqiLayout=findViewById(R.id.aqi_layout);
             aqiLayout.setVisibility(View.GONE);
         }
         String comfort=currentCity.getComfor();
