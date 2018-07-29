@@ -2,8 +2,7 @@
 <com.lhd.weather2018.view.SlidingButtonView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@android:color/white"
+    android:layout_height="60dp"
     android:layout_marginBottom="1dp">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -12,7 +11,7 @@
         <TextView
             android:id="@+id/city_delete"
             android:layout_height="match_parent"
-            android:layout_width="80dp"
+            android:layout_width="50dp"
             android:gravity="center"
             android:layout_toRightOf="@+id/layout_content"
             android:text="删 除"
@@ -28,9 +27,9 @@
                 android:id="@+id/city_manage_text"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
+                android:paddingLeft="10dp"
                 android:gravity="center_vertical"
-                android:textSize="30sp"
-                android:textColor="#DD000000"
+                android:textSize="20sp"
                 android:background="@drawable/black_havebackground"
                 />
         </LinearLayout>

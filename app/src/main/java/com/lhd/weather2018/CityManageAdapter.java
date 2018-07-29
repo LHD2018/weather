@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.ViewHolder>implements SlidingButtonView.SlidingButtonListener{
-    private List<String>mCityList;
+    private List<String>mCityList=new ArrayList<>();
     private Context mContext;
     private SlidingViewClickListener deleteClickListener;
     private SlidingButtonView mMenu;
@@ -42,7 +43,9 @@ public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.V
     }
 
     public CityManageAdapter(List<String> cityList) {
-        mCityList = cityList;
+        for (String city:cityList){
+            mCityList.add(city);
+        }
     }
 
     @NonNull
@@ -50,31 +53,33 @@ public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.V
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mContext=parent.getContext();
         View view= LayoutInflater.from(mContext).inflate(R.layout.city_manage_item,parent,false);
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mCity.setText(mCityList.get(position));
-        holder.layoutContent.getLayoutParams().width= Utility.getScreenWidth(mContext);
+        final ViewHolder holder=new ViewHolder(view);
         holder.mCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (menuIsOpen()){
                     closeMenu();
                 }else{
-                    int n=holder.getLayoutPosition();
-                    deleteClickListener.onItemClick(view,n);
+                    int position=holder.getAdapterPosition();
+                    deleteClickListener.onItemClick(view,position);
                 }
             }
         });
         holder.cityDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int n=holder.getLayoutPosition();
-                deleteClickListener.onDeleteBtnCilck(view,n);
+                int position=holder.getAdapterPosition();
+                deleteClickListener.onDeleteBtnCilck(view,position);
             }
         });
+
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        holder.mCity.setText(mCityList.get(position));
+        holder.layoutContent.getLayoutParams().width= Utility.getScreenWidth(mContext);
     }
 
     @Override
@@ -98,6 +103,7 @@ public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.V
 
     public void removeCity(int i){
         mCityList.remove(i);
+        closeMenu();
         notifyDataSetChanged();
     }
 
@@ -112,7 +118,7 @@ public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.V
         return false;
     }
 
-    public void setOnSlisdListener(SlidingViewClickListener listener){
+    public void setDeleteClickListener(SlidingViewClickListener listener){
         deleteClickListener=listener;
     }
 }

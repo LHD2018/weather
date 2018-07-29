@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/add_city_bg">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp">
+        <include layout="@layout/back"/>
 
 
         <LinearLayout
@@ -30,10 +32,21 @@
                 android:background="@null"
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="10dp"
-                android:hint="搜索"
-                android:textColor="#000"
+                android:hint="城市（中国）"
                 android:maxLines="1"
                 android:textSize="20sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right"
+                android:paddingRight="13dp">
+                <Button
+                    android:id="@+id/clear_search"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/clear"/>
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
     <View

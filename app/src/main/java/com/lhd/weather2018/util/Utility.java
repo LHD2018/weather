@@ -3,19 +3,17 @@ package com.lhd.weather2018.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.ConditionVariable;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.WindowManager;
-import android.widget.Switch;
 import android.widget.Toast;
 
-import com.lhd.weather2018.BaseActivity;
 import com.lhd.weather2018.MainActivity;
 import com.lhd.weather2018.database.AddedCity;
 import com.lhd.weather2018.database.ForecastWeather;
@@ -25,17 +23,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.LitePal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Handler;
+import java.util.Random;
 
 import interfaces.heweather.com.interfacesmodule.bean.air.now.AirNow;
 import interfaces.heweather.com.interfacesmodule.bean.weather.Weather;
 import interfaces.heweather.com.interfacesmodule.bean.weather.forecast.Forecast;
 import interfaces.heweather.com.interfacesmodule.bean.weather.forecast.ForecastBase;
 import interfaces.heweather.com.interfacesmodule.bean.weather.lifestyle.LifestyleBase;
-import interfaces.heweather.com.interfacesmodule.view.HeConfig;
 import interfaces.heweather.com.interfacesmodule.view.HeWeather;
 
 public class Utility {
@@ -112,9 +114,15 @@ public class Utility {
         }
         return null;
     }
+    public static String getWeatherCode(Weather weather){
+        return weather.getNow().getCond_code();
+    }
 
 
     public static void getWeather(final Context context, final String cityName){
+        if (cityName==null){
+            return;
+        }
         flag1=flag2=flag3=false;
         final android.os.Handler handler = new android.os.Handler(){
             @Override
@@ -137,8 +145,8 @@ public class Utility {
         HeWeather.getWeather(context, cityName, new HeWeather.OnResultWeatherDataListBeansListener() {
             @Override
             public void onError(Throwable throwable) {
-                flag1=true;
-                throwable.printStackTrace();
+                String[] errors=throwable.toString().split("msg");
+                Toast.makeText(context,errors[errors.length-1],Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -149,6 +157,7 @@ public class Utility {
                 addedCity.setUpdateTime(getUpadateTime(weather));
                 addedCity.setDegree(getDegree(weather));
                 addedCity.setWeatherInfo(getCondInfo(weather));
+                addedCity.setWeatherCode(getWeatherCode(weather));
                 addedCity.setComfor(getComfor(lifestyleBaseList));
                 addedCity.setDrsg(getDrsg(lifestyleBaseList));
                 addedCity.setSport(getSport(lifestyleBaseList));
@@ -230,30 +239,53 @@ public class Utility {
     }
 
 
-    public static void updateWeather(Context context, final SwipeRefreshLayout refreshLayout){
-       flag1=flag2=flag3=false;
-        final android.os.Handler handler = new android.os.Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what){
-                    case FINISH_OK:
-                        if (flag1&&flag2&&flag3){
-                            refreshLayout.setRefreshing(false);
 
-                        }
-                        break;
-                    default:
-                        break;
-
-                }
+    public static boolean isExist(String city){
+        List<AddedCity> addedCities = LitePal.where("cityName=?",city).find(AddedCity.class);
+        if (!addedCities.isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    /**
+     * 获取当前网络状态(是否可用)
+     */
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connManager != null) {
+            NetworkInfo activeNetInfo = connManager.getActiveNetworkInfo();
+            if (activeNetInfo != null) {
+                return activeNetInfo.isAvailable();
             }
-        };
+        }
+        return  false;
+    }
+
+
+   /* public static int dp2px(Context context,float dp)
+    {
+        return (int ) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }*/
+
+    public static int getScreenWidth(Context context)
+    {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE );
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics( outMetrics);
+        return outMetrics .widthPixels ;
+    }
+
+    public static void updateWeather(Context context){
         final String city=getCurrentCity(context);
+        if (city==null){
+            return;
+        }
         HeWeather.getWeather(context, city, new HeWeather.OnResultWeatherDataListBeansListener() {
 
             @Override
             public void onError(Throwable throwable) {
-                flag1=true;
+                flag1=false;
                 throwable.printStackTrace();
             }
 
@@ -270,16 +302,12 @@ public class Utility {
                 addedCity.setSport(getSport(lifestyleBaseList));
                 addedCity.updateAll("cityName=?",city);
                 flag1=true;
-                Message message=new Message();
-                message.what=FINISH_OK;
-                handler.sendMessage(message);
 
             }
         });
         HeWeather.getWeatherForecast(context, city, new HeWeather.OnResultWeatherForecastBeanListener() {
             @Override
             public void onError(Throwable throwable) {
-                flag2=true;
                 throwable.printStackTrace();
             }
 
@@ -310,16 +338,11 @@ public class Utility {
                         forecastWeather.save();
                     }
                 }
-                flag2=true;
-                Message message=new Message();
-                message.what=FINISH_OK;
-                handler.sendMessage(message);
             }
         });
         HeWeather.getAirNow(context, city, new HeWeather.OnResultAirNowBeansListener() {
             @Override
             public void onError(Throwable throwable) {
-                flag3=true;
                 throwable.printStackTrace();
 
             }
@@ -331,47 +354,60 @@ public class Utility {
                 addedCity.setAqi(airNow.getAir_now_city().getAqi());
                 addedCity.setPm25(airNow.getAir_now_city().getPm25());
                 addedCity.updateAll("cityName=?",city);
-                flag3=true;
-                Message message=new Message();
-                message.what=FINISH_OK;
-                handler.sendMessage(message);
             }
         });
 
     }
-    public static boolean isExist(String city){
-        List<AddedCity> addedCities = LitePal.where("cityName=?",city).find(AddedCity.class);
-        if (!addedCities.isEmpty()){
+    public static boolean isDay(){
+        SimpleDateFormat sdf=new SimpleDateFormat("HH");
+        String hour=sdf.format(new Date());
+        int k=Integer.parseInt(hour);
+        if (k>=6&&k<=18){
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
-    /**
-     * 获取当前网络状态(是否可用)
-     */
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connManager != null) {
-            NetworkInfo activeNetInfo = connManager.getActiveNetworkInfo();
-            if (activeNetInfo != null) {
-                return activeNetInfo.isAvailable();
+    public static String getPoetry(final Context context){
+       final List<String> poetryList=new ArrayList<>();
+       String poetry=null;
+        try {
+            InputStream inputStream=context.getAssets().open("poetries.txt");
+            BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while((line=reader.readLine())!=null){
+                if (line.equals("")){
+                    continue;
+                }
+                poetryList.add(line);
             }
+            inputStream.close();
+            Random random=new Random();
+            int i=random.nextInt(poetryList.size()-1);
+            poetry=poetryList.get(i);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return  false;
+        return poetry;
     }
 
+    public static Bitmap getWeatherIco(Context context,String weatherCode){
+        Bitmap bitmap=null;
+        AssetManager manager=context.getAssets();
+        String fileName;
+        if (isDay()){
+            fileName=weatherCode+".png";
+        }else{
+            fileName=weatherCode+"n.png";
+        }
+        try {
+            InputStream is=manager.open("weather_ico/"+fileName);
+            bitmap= BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
 
-    public static int dp2px(Context context,float dp)
-    {
-        return (int ) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    public static int getScreenWidth(Context context)
-    {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE );
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics( outMetrics);
-        return outMetrics .widthPixels ;
-    }
 }

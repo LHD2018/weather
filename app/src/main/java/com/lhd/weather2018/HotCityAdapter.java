@@ -40,7 +40,7 @@ public class HotCityAdapter extends RecyclerView.Adapter<HotCityAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 //搜索
-                view.setBackgroundColor(Color.BLUE);
+                view.setBackgroundColor(Color.TRANSPARENT);
                 int position=holder.getAdapterPosition();
                 String city=cityList.get(position);
                 Context context=parent.getContext();

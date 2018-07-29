@@ -14,6 +14,7 @@ public class AddedCity extends LitePalSupport {
     private String updateTime;
     private String degree;
     private String weatherInfo;
+    private String weatherCode;
 
     private String aqi;
     private String pm25;
@@ -21,6 +22,14 @@ public class AddedCity extends LitePalSupport {
     private String comfor;
     private String drsg;
     private String sport;
+
+    public String getWeatherCode() {
+        return weatherCode;
+    }
+
+    public void setWeatherCode(String weatherCode) {
+        this.weatherCode = weatherCode;
+    }
 
     public String getCityName() {
         return cityName;

@@ -5,11 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#fff">
     <ImageView
-        android:id="@+id/main_bg_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_pic_1"
+        android:src="@drawable/main_bg"
         android:alpha="0.75"/>
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
@@ -50,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            app:headerLayout="@layout/nav_head"
+            android:background="@drawable/nav_bg"
             app:menu="@menu/nav_menu">
 
         </android.support.design.widget.NavigationView>
