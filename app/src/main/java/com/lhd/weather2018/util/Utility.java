@@ -409,5 +409,14 @@ public class Utility {
         return bitmap;
 
     }
+    public static void setApiKey(Context context,String apiKey){
+        SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString("api_key",apiKey);
+        editor.apply();
+    }
+    public static String getApiKey(Context context){
+        SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString("api_key",null);
+    }
 
 }

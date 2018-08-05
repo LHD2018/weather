@@ -56,4 +56,11 @@
 
     </android.support.v4.widget.DrawerLayout>
 
+    <TextView
+        android:id="@+id/cloud"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#ffff"/>
+
 </FrameLayout>

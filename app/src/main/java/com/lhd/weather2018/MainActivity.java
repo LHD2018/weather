@@ -1,12 +1,14 @@
 package com.lhd.weather2018;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navView;
     private CardView aqiLayout;
+    private FloatingActionButton addFloat;
+    private boolean floatIsOpened=false;
+    private TextView cloudText;
 
     private ImageView navWeatherPic;
     private TextView navPoetry;
@@ -81,9 +87,12 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         setContentView(R.layout.activity_main);
-        String userId="HE1807171032311823";
-        String key="24a2d899122b4526b7299924f133c599";
-        HeConfig.init(userId,key);
+        if (Utility.getApiKey(MainActivity.this)==null){
+            String apiKey="HE1807171032311823/24a2d899122b4526b7299924f133c599";
+            Utility.setApiKey(MainActivity.this,apiKey);
+        }
+        String[] keyStr=Utility.getApiKey(MainActivity.this).split("/");
+        HeConfig.init(keyStr[0],keyStr[1]);
         HeConfig.switchToFreeServerNode();
         boolean isDay=Utility.isDay();
         AppCompatDelegate.setDefaultNightMode(isDay ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
@@ -110,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         swipeRefresh=findViewById(R.id.swipe_refresh);
         drawerLayout=findViewById(R.id.drawer_layout);
         navView=findViewById(R.id.nav_view);
+        cloudText=findViewById(R.id.cloud);
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -188,7 +198,44 @@ public class MainActivity extends AppCompatActivity {
         });
         Intent intent=new Intent(this, UpdateWeatherService.class);
         startService(intent);
+        /*cloudText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeFloatMenu(addFloat);
+            }
+        });
+        addFloat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (floatIsOpened){
+                    closeFloatMenu(view);
+                }else{
+                    openFloatMenu(view);
+                }
+            }
+        });*/
     }
+    /*private void closeFloatMenu(View view){
+        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",-135,20,0);
+        animator.setDuration(500);
+        animator.start();
+        AlphaAnimation animation=new AlphaAnimation(0.7f,0);
+        animation.setDuration(500);
+        cloudText.startAnimation(animation);
+        cloudText.setVisibility(View.GONE);
+        floatIsOpened=false;
+    }
+    private void openFloatMenu(View view){
+        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",0,-155,-135);
+        animator.setDuration(500);
+        animator.start();
+        cloudText.setVisibility(View.VISIBLE);
+        AlphaAnimation animation=new AlphaAnimation(0,0.7f);
+        animation.setDuration(500);
+        animation.setFillAfter(true);
+        cloudText.setAnimation(animation);
+        floatIsOpened=true;
+    }*/
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

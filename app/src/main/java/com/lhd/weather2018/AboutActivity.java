@@ -17,6 +17,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     private TextView updateApp;
     private TextView openGithub;
     private TextView showStatement;
+    private TextView heWatherWeb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +27,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         updateApp=findViewById(R.id.update_app);
         openGithub=findViewById(R.id.open_github);
         showStatement=findViewById(R.id.statement);
+        heWatherWeb=findViewById(R.id.heweather_web);
         ImageView back=findViewById(R.id.back);
         updateLog.setOnClickListener(this);
         updateApp.setOnClickListener(this);
         openGithub.setOnClickListener(this);
         showStatement.setOnClickListener(this);
+        heWatherWeb.setOnClickListener(this);
         back.setOnClickListener(this);
 
     }
@@ -64,8 +67,8 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             case R.id.statement:
                 AlertDialog.Builder statementDialog=new AlertDialog.Builder(AboutActivity.this);
                 statementDialog.setTitle("免责声明");
-                statementDialog.setMessage("采用和风接口");
-                statementDialog.setCancelable(false);
+                statementDialog.setMessage("本应用采用和风接口，数据均来源于网络，本人不承担法律责任");
+                statementDialog.setCancelable(true);
                 statementDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -73,6 +76,11 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
                 statementDialog.show();
+                break;
+            case R.id.heweather_web:
+                Uri heWeatherUri=Uri.parse("https://console.heweather.com");
+                Intent intent3=new Intent(Intent.ACTION_VIEW,heWeatherUri);
+                startActivity(intent3);
                 break;
             case R.id.back:
                 finish();
