@@ -1,4 +1,4 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.lhd.weather2018.util.Utility;
+import com.lhd.weather.util.Utility;
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText userId;

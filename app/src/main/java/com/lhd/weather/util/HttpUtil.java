@@ -1,13 +1,7 @@
-package com.lhd.weather2018.util;
+package com.lhd.weather.util;
 
-import java.io.IOException;
-
-import okhttp3.Address;
-import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class HttpUtil {
     public static void sendOkhttpRequest(String address,okhttp3.Callback callback){

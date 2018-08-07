@@ -1,12 +1,6 @@
-package com.lhd.weather2018.database;
+package com.lhd.weather.database;
 
 import org.litepal.crud.LitePalSupport;
-
-import interfaces.heweather.com.interfacesmodule.bean.air.now.AirNow;
-import interfaces.heweather.com.interfacesmodule.bean.weather.Weather;
-import interfaces.heweather.com.interfacesmodule.bean.weather.forecast.Forecast;
-import interfaces.heweather.com.interfacesmodule.bean.weather.lifestyle.Lifestyle;
-import interfaces.heweather.com.interfacesmodule.bean.weather.now.Now;
 
 public class AddedCity extends LitePalSupport {
 

@@ -1,4 +1,4 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,13 +18,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lhd.weather2018.util.HttpUtil;
-import com.lhd.weather2018.util.Utility;
+import com.lhd.weather.util.HttpUtil;
+import com.lhd.weather.util.Utility;
 
 import java.io.IOException;
 import java.util.ArrayList;

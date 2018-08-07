@@ -1,4 +1,4 @@
-package com.lhd.weather2018.view;
+package com.lhd.weather.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
-import com.lhd.weather2018.R;
+import com.lhd.weather.R;
 
 public class SlidingButtonView extends HorizontalScrollView {
     private TextView mTextView_delete;

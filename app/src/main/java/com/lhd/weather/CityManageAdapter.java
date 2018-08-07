@@ -1,4 +1,4 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,12 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.lhd.weather2018.util.Utility;
-import com.lhd.weather2018.view.SlidingButtonView;
+import com.lhd.weather.util.Utility;
+import com.lhd.weather.view.SlidingButtonView;
 
 import java.util.ArrayList;
 import java.util.List;

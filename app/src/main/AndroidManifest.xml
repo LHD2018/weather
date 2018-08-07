@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lhd.weather2018">
+    package="com.lhd.weather">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.lhd.weather.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,20 +27,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddCityActivity"
+            android:name="com.lhd.weather.AddCityActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name=".ManageCityActivity"
+            android:name="com.lhd.weather.ManageCityActivity"
             android:launchMode="singleTask" />
 
         <service
-            android:name=".service.UpdateWeatherService"
+            android:name="com.lhd.weather.service.UpdateWeatherService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".AboutActivity"
+        <activity android:name="com.lhd.weather.AboutActivity"
             android:launchMode="singleTask"/>
-        <activity android:name=".SettingActivity"
+        <activity android:name="com.lhd.weather.SettingActivity"
             android:launchMode="singleTask"></activity>
     </application>
 

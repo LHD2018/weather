@@ -1,10 +1,9 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v4.content.ContextCompat;
 
-import com.lhd.weather2018.util.Utility;
+import com.lhd.weather.util.Utility;
 
 public class UpdateWeatherTask extends AsyncTask <Context,Void,Integer>{
     public static final int SUCCESS=0;

@@ -1,4 +1,4 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,9 +13,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.lhd.weather2018.database.AddedCity;
-import com.lhd.weather2018.database.ForecastWeather;
-import com.lhd.weather2018.util.Utility;
+import com.lhd.weather.database.AddedCity;
+import com.lhd.weather.database.ForecastWeather;
+import com.lhd.weather.util.Utility;
 
 import org.litepal.LitePal;
 

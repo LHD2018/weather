@@ -1,4 +1,4 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

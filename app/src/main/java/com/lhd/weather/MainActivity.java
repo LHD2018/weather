@@ -1,7 +1,6 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -23,19 +22,17 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lhd.weather2018.database.AddedCity;
-import com.lhd.weather2018.database.ForecastWeather;
-import com.lhd.weather2018.service.UpdateWeatherService;
-import com.lhd.weather2018.util.Utility;
+import com.lhd.weather.database.AddedCity;
+import com.lhd.weather.database.ForecastWeather;
+import com.lhd.weather.service.UpdateWeatherService;
+import com.lhd.weather.util.Utility;
 
 import org.litepal.LitePal;
 

@@ -1,4 +1,4 @@
-package com.lhd.weather2018.database;
+package com.lhd.weather.database;
 
 import org.litepal.crud.LitePalSupport;
 

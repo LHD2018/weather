@@ -2,8 +2,8 @@
     <dbname value="weather"/>
     <version value="1"/>
     <list>
-        <mapping class="com.lhd.weather2018.database.AddedCity"/>
-        <mapping class="com.lhd.weather2018.database.ForecastWeather"/>
+        <mapping class="com.lhd.weather.database.AddedCity"/>
+        <mapping class="com.lhd.weather.database.ForecastWeather"/>
 
     </list>
 </litepal>

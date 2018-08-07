@@ -1,4 +1,4 @@
-package com.lhd.weather2018.util;
+package com.lhd.weather.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,9 +14,9 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.lhd.weather2018.MainActivity;
-import com.lhd.weather2018.database.AddedCity;
-import com.lhd.weather2018.database.ForecastWeather;
+import com.lhd.weather.MainActivity;
+import com.lhd.weather.database.AddedCity;
+import com.lhd.weather.database.ForecastWeather;
 
 import org.json.JSONArray;
 import org.json.JSONException;

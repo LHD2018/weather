@@ -1,4 +1,4 @@
-package com.lhd.weather2018;
+package com.lhd.weather;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lhd.weather2018.util.Utility;
+import com.lhd.weather.util.Utility;
 
 import java.util.List;
 
