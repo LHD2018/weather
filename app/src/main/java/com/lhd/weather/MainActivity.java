@@ -21,7 +21,9 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private AddedCity currentCity;
     private String currentCityName;
     private ScrollView weatherLayout;
+    private ScrollView forecastScroll;
     private TextView titleCity;
     private TextView titleUpdeateTime;
     private Button navButton;
@@ -100,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         navDegree=headLayout.findViewById(R.id.nav_degree);
         navWeatherPic=headLayout.findViewById(R.id.nav_weather_pic);
         weatherLayout=findViewById(R.id.weather_layout);
+        forecastScroll=findViewById(R.id.forecast_scroll);
         aqiLayout=findViewById(R.id.aqi_layout);
         titleCity=findViewById(R.id.title_city);
         titleUpdeateTime=findViewById(R.id.title_update_time);
@@ -117,6 +121,30 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout=findViewById(R.id.drawer_layout);
         navView=findViewById(R.id.nav_view);
         cloudText=findViewById(R.id.cloud);
+        weatherLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                forecastScroll.getParent().requestDisallowInterceptTouchEvent(false);
+                return false;
+            }
+        });
+        forecastScroll.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+        if (forecastScroll!=null){
+            forecastScroll.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    if (swipeRefresh != null) {
+                        swipeRefresh.setEnabled(forecastScroll.getScrollY() == 0);
+                    }
+                }
+            });
+        }
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

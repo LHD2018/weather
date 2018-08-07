@@ -2,6 +2,8 @@ package com.lhd.weather;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class AboutActivity extends AppCompatActivity implements View.OnClickListener {
+    private TextView versionCode;
     private TextView updateLog;
     private TextView updateApp;
     private TextView openGithub;
@@ -21,6 +24,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        versionCode=findViewById(R.id.version_code);
         updateLog=findViewById(R.id.update_log);
         updateApp=findViewById(R.id.update_app);
         openGithub=findViewById(R.id.open_github);
@@ -33,6 +37,13 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         showStatement.setOnClickListener(this);
         heWatherWeb.setOnClickListener(this);
         back.setOnClickListener(this);
+        PackageManager manager=this.getPackageManager();
+        try {
+            PackageInfo info=manager.getPackageInfo(this.getPackageName(),0);
+            versionCode.setText("Version "+info.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -42,7 +53,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
             case R.id.update_log:
                 AlertDialog.Builder updateDialog=new AlertDialog.Builder(AboutActivity.this);
                 updateDialog.setTitle("更新日志");
-                updateDialog.setMessage("第一个版本");
+                updateDialog.setMessage("8.7\n修复若干bug");
                 updateDialog.setCancelable(true);
                 updateDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

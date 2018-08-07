@@ -66,7 +66,7 @@ public class Utility {
         return weather.getBasic().getLocation();
     }
 
-    public static String getUpadateTime(Weather weather){
+    public static String getUpdateTime(Weather weather){
         return weather.getUpdate().getLoc();
     }
 
@@ -88,7 +88,7 @@ public class Utility {
         return forecastBase.getCond_txt_d();
     }
     public static String getTemRange(ForecastBase forecastBase){
-        return forecastBase.getTmp_min()+"~"+forecastBase.getTmp_max();
+        return forecastBase.getTmp_min()+"° ~ "+forecastBase.getTmp_max()+"°";
     }
     public static String getComfor(List<LifestyleBase> lifestyleBaseList){
          for (LifestyleBase lifestyleBase:lifestyleBaseList){
@@ -154,7 +154,7 @@ public class Utility {
                 Weather weather=list.get(0);
                 List<LifestyleBase> lifestyleBaseList=weather.getLifestyle();
                 addedCity.setCityName(getCityName(weather));
-                addedCity.setUpdateTime(getUpadateTime(weather));
+                addedCity.setUpdateTime(getUpdateTime(weather));
                 addedCity.setDegree(getDegree(weather));
                 addedCity.setWeatherInfo(getCondInfo(weather));
                 addedCity.setWeatherCode(getWeatherCode(weather));
@@ -192,6 +192,9 @@ public class Utility {
                     }
                     if (i==2){
                         forecastWeather.setDate(getDate(forecastBase)+"（后天）");
+                    }
+                    if (i>2){
+                        forecastWeather.setDate(getDate(forecastBase));
                     }
                     forecastWeather.setCondText(getForecastInfo(forecastBase));
                     forecastWeather.setTemRange(getTemRange(forecastBase));
@@ -294,7 +297,7 @@ public class Utility {
                 Weather weather=list.get(0);
                 List<LifestyleBase> lifestyleBaseList=weather.getLifestyle();
                 AddedCity addedCity=new AddedCity();
-                addedCity.setUpdateTime(getUpadateTime(weather));
+                addedCity.setUpdateTime(getUpdateTime(weather));
                 addedCity.setDegree(getDegree(weather));
                 addedCity.setWeatherInfo(getCondInfo(weather));
                 addedCity.setComfor(getComfor(lifestyleBaseList));

@@ -83,12 +83,15 @@ public class ManageCityActivity extends AppCompatActivity implements CityManageA
     @Override
     public void onDeleteBtnCilck(View view, int position) {
         cityManageAdapter.removeCity(position);
-        String deletedcity=cities.get(position);
+        String deletedCity=cities.get(position);
         cities.remove(position);
-        LitePal.deleteAll(AddedCity.class,"cityName=?",deletedcity);
-        LitePal.deleteAll(ForecastWeather.class,"cityName=?",deletedcity);
-        if (Utility.getCurrentCity(ManageCityActivity.this).equals(deletedcity)||cities.isEmpty()){
-            Utility.setCurrentCity(ManageCityActivity.this,null);
+        LitePal.deleteAll(AddedCity.class,"cityName=?",deletedCity);
+        LitePal.deleteAll(ForecastWeather.class,"cityName=?",deletedCity);
+        String currentCity=Utility.getCurrentCity(ManageCityActivity.this);
+        if (currentCity!=null){
+            if (currentCity.equals(deletedCity)||cities.isEmpty()){
+                Utility.setCurrentCity(ManageCityActivity.this,null);
+            }
         }
     }
 }

@@ -19,13 +19,20 @@
             android:text="预报"
             android:textColor="#fff"
             android:textSize="20sp"/>
-        <LinearLayout
-            android:id="@+id/forecast_layout"
-            android:orientation="vertical"
+        <ScrollView
+            android:id="@+id/forecast_scroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="150dp"
+            android:scrollbars="none"
+            android:overScrollMode="never">
+            <LinearLayout
+                android:id="@+id/forecast_layout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
