@@ -40,21 +40,26 @@ import interfaces.heweather.com.interfacesmodule.bean.weather.forecast.ForecastB
 import interfaces.heweather.com.interfacesmodule.bean.weather.lifestyle.LifestyleBase;
 import interfaces.heweather.com.interfacesmodule.view.HeWeather;
 
+/**
+ * app中用到的工具
+ */
 public class Utility {
     public static final int FINISH_OK=1;
 
     public static boolean flag1;
     public static boolean flag2;
     public static boolean flag3;
+
+    //处理热门城市
     public static List<String> handleHotCityResponce(String responce){
-        List<String> list=new ArrayList<>();
+        List<String> list = new ArrayList<>();
         try {
-            JSONObject object1=new JSONObject(responce);
-            JSONArray array1=object1.getJSONArray("HeWeather6");
-            JSONObject object2=array1.getJSONObject(0);
-            JSONArray array2=object2.getJSONArray("basic");
+            JSONObject object1 = new JSONObject(responce);
+            JSONArray array1 = object1.getJSONArray("HeWeather6");
+            JSONObject object2 = array1.getJSONObject(0);
+            JSONArray array2 = object2.getJSONArray("basic");
             for (int i=0;i<array2.length();i++){
-                JSONObject object3=array2.getJSONObject(i);
+                JSONObject object3 = array2.getJSONObject(i);
                 list.add(object3.getString("location"));
             }
         } catch (JSONException e) {
@@ -62,22 +67,23 @@ public class Utility {
         }
         return list;
     }
+    //获取城市名称
     public static String getCityName(Weather weather){
         return weather.getBasic().getLocation();
     }
-
+//获取更新时间
     public static String getUpdateTime(Weather weather){
         return weather.getUpdate().getLoc();
     }
-
+//获取温度
     public static String getDegree(Weather weather){
         return weather.getNow().getTmp();
     }
-
+//获取天气信息
     public static String getCondInfo(Weather weather){
         return weather.getNow().getCond_txt();
     }
-
+//获取预报天气日期
     public static String getDate(ForecastBase forecastBase){
         String date=forecastBase.getDate();
         String[] dateData=date.split("-");
@@ -90,6 +96,7 @@ public class Utility {
     public static String getTemRange(ForecastBase forecastBase){
         return forecastBase.getTmp_min()+"° ~ "+forecastBase.getTmp_max()+"°";
     }
+    //获取舒适度
     public static String getComfor(List<LifestyleBase> lifestyleBaseList){
          for (LifestyleBase lifestyleBase:lifestyleBaseList){
             if (lifestyleBase.getType().equals("comf")){
@@ -98,6 +105,7 @@ public class Utility {
         }
         return null;
     }
+//获取穿衣指数
     public static String getDrsg(List<LifestyleBase> lifestyleBaseList){
          for (LifestyleBase lifestyleBase:lifestyleBaseList){
             if (lifestyleBase.getType().equals("drsg")){
@@ -106,6 +114,7 @@ public class Utility {
         }
         return null;
     }
+    //获取运动建议
     public static String getSport(List<LifestyleBase> lifestyleBaseList){
          for (LifestyleBase lifestyleBase:lifestyleBaseList){
             if (lifestyleBase.getType().equals("sport")){
@@ -118,7 +127,7 @@ public class Utility {
         return weather.getNow().getCond_code();
     }
 
-
+//获取天气信息
     public static void getWeather(final Context context, final String cityName){
         if (cityName==null){
             return;
@@ -152,7 +161,7 @@ public class Utility {
             @Override
             public void onSuccess(List<Weather> list) {
                 Weather weather=list.get(0);
-                List<LifestyleBase> lifestyleBaseList=weather.getLifestyle();
+                List<LifestyleBase> lifestyleBaseList = weather.getLifestyle();
                 addedCity.setCityName(getCityName(weather));
                 addedCity.setUpdateTime(getUpdateTime(weather));
                 addedCity.setDegree(getDegree(weather));
@@ -177,11 +186,11 @@ public class Utility {
 
             @Override
             public void onSuccess(List<Forecast> list) {
-                Forecast forecast=list.get(0);
-                List<ForecastBase> forecastBaselist=forecast.getDaily_forecast();
+                Forecast forecast = list.get(0);
+                List<ForecastBase> forecastBaselist = forecast.getDaily_forecast();
                 for (int i=0;i<forecastBaselist.size();i++){
                     ForecastBase forecastBase=forecastBaselist.get(i);
-                    ForecastWeather forecastWeather=new ForecastWeather();
+                    ForecastWeather forecastWeather = new ForecastWeather();
                     forecastWeather.setfId(i);
                     forecastWeather.setCityName(cityName);
                     if (i==0){
@@ -216,7 +225,7 @@ public class Utility {
 
             @Override
             public void onSuccess(List<AirNow> list) {
-                AirNow airNow=list.get(0);
+                AirNow airNow = list.get(0);
                 addedCity.setAqi(airNow.getAir_now_city().getAqi());
                 addedCity.setPm25(airNow.getAir_now_city().getPm25());
                 addedCity.save();
@@ -228,21 +237,21 @@ public class Utility {
         });
 
     }
-
+//设置当前城市
     public static boolean setCurrentCity(Context context,String city){
         SharedPreferences.Editor editor= PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString("current_city_name",city);
         editor.apply();
         return true;
     }
-
+    //获取当前城市
     public static String getCurrentCity(Context context){
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString("current_city_name",null);
     }
 
 
-
+//判断当前城市是否存在
     public static boolean isExist(String city){
         List<AddedCity> addedCities = LitePal.where("cityName=?",city).find(AddedCity.class);
         if (!addedCities.isEmpty()){
@@ -266,11 +275,7 @@ public class Utility {
     }
 
 
-   /* public static int dp2px(Context context,float dp)
-    {
-        return (int ) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-    }*/
-
+//获取屏幕宽度
     public static int getScreenWidth(Context context)
     {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE );
@@ -278,7 +283,7 @@ public class Utility {
         wm.getDefaultDisplay().getMetrics( outMetrics);
         return outMetrics .widthPixels ;
     }
-
+//更新天气
     public static void updateWeather(Context context){
         final String city=getCurrentCity(context);
         if (city==null){
@@ -317,12 +322,12 @@ public class Utility {
             @Override
             public void onSuccess(List<Forecast> list) {
                 Forecast forecast=list.get(0);
-                List<ForecastBase> forecastBaselist=forecast.getDaily_forecast();
-                List<ForecastWeather>  idList=LitePal.where("cityName=?",city).select("fId").find(ForecastWeather.class);
-                int lastId=idList.get(idList.size()-1).getfId();
-                for (int i=0;i<forecastBaselist.size();i++){
+                List<ForecastBase> forecastBaselist = forecast.getDaily_forecast();
+                List<ForecastWeather>  idList = LitePal.where("cityName=?",city).select("fId").find(ForecastWeather.class);
+                int lastId = idList.get(idList.size()-1).getfId();
+                for (int i=0; i<forecastBaselist.size(); i++){
                     ForecastBase forecastBase=forecastBaselist.get(i);
-                    ForecastWeather forecastWeather=new ForecastWeather();
+                    ForecastWeather forecastWeather =   new ForecastWeather();
                     if (i==0){
                         forecastWeather.setDate(getDate(forecastBase)+"（今天）");
                     }
@@ -361,6 +366,7 @@ public class Utility {
         });
 
     }
+    //判断白天夜晚
     public static boolean isDay(){
         SimpleDateFormat sdf=new SimpleDateFormat("HH");
         String hour=sdf.format(new Date());
@@ -370,9 +376,10 @@ public class Utility {
         }
         return false;
     }
+    //加载每日一句
     public static String getPoetry(final Context context){
-       final List<String> poetryList=new ArrayList<>();
-       String poetry=null;
+       final List<String> poetryList = new ArrayList<>();
+       String poetry = null;
         try {
             InputStream inputStream=context.getAssets().open("poetries.txt");
             BufferedReader reader=new BufferedReader(new InputStreamReader(inputStream));
@@ -385,14 +392,14 @@ public class Utility {
             }
             inputStream.close();
             Random random=new Random();
-            int i=random.nextInt(poetryList.size()-1);
-            poetry=poetryList.get(i);
+            int i = random.nextInt(poetryList.size()-1);
+            poetry = poetryList.get(i);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return poetry;
     }
-
+//加载天气图标
     public static Bitmap getWeatherIco(Context context,String weatherCode){
         Bitmap bitmap=null;
         AssetManager manager=context.getAssets();
@@ -412,11 +419,13 @@ public class Utility {
         return bitmap;
 
     }
+    //设置heweather接口api—key
     public static void setApiKey(Context context,String apiKey){
         SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString("api_key",apiKey);
         editor.apply();
     }
+    //获取heweather 接口api—key
     public static String getApiKey(Context context){
         SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getString("api_key",null);

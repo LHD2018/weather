@@ -32,7 +32,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.set_key:
-                String apiKey=userId.getText().toString()+"/"+userKey.getText().toString();
+                String apiKey = userId.getText().toString()+"/"+userKey.getText().toString();
                 if (apiKey.equals("/")){
                     Toast.makeText(SettingActivity.this,"请输入id和key",Toast.LENGTH_SHORT).show();
                 }else{

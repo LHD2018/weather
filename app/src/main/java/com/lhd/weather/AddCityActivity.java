@@ -38,7 +38,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class AddCityActivity extends AppCompatActivity {
-    public static final int NONETWORK=1;
+    public static final int NONETWORK = 1;
 
     private Handler handler=new Handler(){
         @Override
@@ -67,12 +67,12 @@ public class AddCityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city);
-        clearSearch=findViewById(R.id.clear_search);
+        clearSearch = findViewById(R.id.clear_search);
         clearSearch.setVisibility(View.GONE);
-        hotCityRecycler=findViewById(R.id.hot_city_recycler);
-        StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(4,StaggeredGridLayoutManager.VERTICAL);
+        hotCityRecycler = findViewById(R.id.hot_city_recycler);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4,StaggeredGridLayoutManager.VERTICAL);
         hotCityRecycler.setLayoutManager(layoutManager);
-        hotCityAdapter=new HotCityAdapter(hotCityList);
+        hotCityAdapter = new HotCityAdapter(hotCityList);
         hotCityRecycler.setAdapter(hotCityAdapter);
         initList();
         serchedView=findViewById(R.id.searched_city_list);
@@ -114,19 +114,19 @@ public class AddCityActivity extends AppCompatActivity {
                 if (i== EditorInfo.IME_ACTION_SEARCH){
                     searchedCities.clear();
                     searchedAdapter.notifyDataSetChanged();
-                    String input=textView.getText().toString();
+                    String input = textView.getText().toString();
                     searchCity(input);
                 }
                 return true;
             }
         });
-        searchedAdapter=new ArrayAdapter<>(AddCityActivity.this,android.R.layout.simple_list_item_1,searchedCities);
+        searchedAdapter = new ArrayAdapter<>(AddCityActivity.this,android.R.layout.simple_list_item_1,searchedCities);
         serchedView.setAdapter(searchedAdapter);
         serchedView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 view.setBackgroundColor(Color.TRANSPARENT);
-                final String city=searchedCities.get(i).split("（")[0];
+                final String city = searchedCities.get(i).split("（")[0];
                 if (Utility.isNetworkAvailable(AddCityActivity.this)){
                     if (!Utility.isExist(city)){
                         Utility.getWeather(AddCityActivity.this,city);
@@ -141,7 +141,7 @@ public class AddCityActivity extends AppCompatActivity {
                 }
             }
         });
-        ImageView back=findViewById(R.id.back);
+        ImageView back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,7 +150,7 @@ public class AddCityActivity extends AppCompatActivity {
         });
     }
 
-
+//初始化热门城市
     private void initList(){
         String url="https://search.heweather.com/top?group=cn&key=24a2d899122b4526b7299924f133c599&number=24";
         HttpUtil.sendOkhttpRequest(url, new Callback() {
@@ -164,7 +164,7 @@ public class AddCityActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseData=response.body().string();
+                String responseData = response.body().string();
                 final List<String> hotCities= Utility.handleHotCityResponce(responseData);
                 runOnUiThread(new Runnable() {
                     @Override
@@ -179,6 +179,7 @@ public class AddCityActivity extends AppCompatActivity {
         });
 
     }
+    //搜索城市
     private void searchCity(String inputCity){
         HeWeather.getSearch(this, inputCity, "world", 10, Lang.CHINESE_SIMPLIFIED, new HeWeather.OnResultSearchBeansListener() {
             @Override
@@ -191,7 +192,7 @@ public class AddCityActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(Search search) {
-                List<Basic> searchedBasic=search.getBasic();
+                List<Basic> searchedBasic = search.getBasic();
                 for (Basic basic:searchedBasic){
                     if (basic.getParent_city()!=null){
                         searchedCities.add(basic.getLocation()+"（"+basic.getParent_city()+"）");

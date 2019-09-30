@@ -3,6 +3,7 @@ package com.lhd.weather.util;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+//发送网络请求
 public class HttpUtil {
     public static void sendOkhttpRequest(String address,okhttp3.Callback callback){
         OkHttpClient client=new OkHttpClient();

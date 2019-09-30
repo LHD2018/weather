@@ -28,7 +28,7 @@ public class HotCityAdapter extends RecyclerView.Adapter<HotCityAdapter.ViewHold
     }
 
     public HotCityAdapter(List<String> dataList) {
-        cityList=dataList;
+        cityList = dataList;
     }
 
     @NonNull
@@ -41,7 +41,7 @@ public class HotCityAdapter extends RecyclerView.Adapter<HotCityAdapter.ViewHold
             public void onClick(View view) {
                 //搜索
                 view.setBackgroundColor(Color.TRANSPARENT);
-                int position=holder.getAdapterPosition();
+                int position = holder.getAdapterPosition();
                 String city=cityList.get(position);
                 Context context=parent.getContext();
                 if (Utility.isNetworkAvailable(context)){

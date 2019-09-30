@@ -19,15 +19,15 @@ public class UpdateWeatherService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Utility.updateWeather(this);
-        AlarmManager manager=(AlarmManager)getSystemService(ALARM_SERVICE);
-        int hours=6*60*60*1000;
-        long triggerAtTime= SystemClock.elapsedRealtime()+hours;
-        Intent i=new Intent(this,UpdateWeatherService.class);
-        PendingIntent pi=PendingIntent.getService(this,0,i,0);
+        AlarmManager manager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        int hours = 6*60*60*1000;
+        long triggerAtTime = SystemClock.elapsedRealtime() + hours;
+        Intent i = new Intent(this,UpdateWeatherService.class);
+        PendingIntent pi = PendingIntent.getService(this,0,i,0);
         manager.cancel(pi);
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pi);
+        return super.onStartCommand(intent, flags, startId);
     }
 }

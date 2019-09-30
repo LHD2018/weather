@@ -4,10 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.lhd.weather.util.Utility;
-
+//更新天气
 public class UpdateWeatherTask extends AsyncTask <Context,Void,Integer>{
-    public static final int SUCCESS=0;
-    public static final int FAILED=1;
+    public static final int SUCCESS = 0;
+    public static final int FAILED = 1;
 
     private UpdateWeatherListener listener;
 

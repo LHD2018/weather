@@ -26,7 +26,7 @@ public class ManageCityActivity extends AppCompatActivity implements CityManageA
     private FrameLayout managerTitle;
     private RecyclerView cityManageRecycler;
     private CityManageAdapter cityManageAdapter;
-    private List<String> cities=new ArrayList<>();
+    private List<String> cities = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +38,18 @@ public class ManageCityActivity extends AppCompatActivity implements CityManageA
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         setContentView(R.layout.activity_manage_city);
-        managerTitle=findViewById(R.id.manage_title);
+        managerTitle = findViewById(R.id.manage_title);
         if (Utility.isDay()){
             managerTitle.setBackgroundResource(R.drawable.title_bg);
         }
-        cityManageRecycler=findViewById(R.id.city_manage_recycler);
+        cityManageRecycler = findViewById(R.id.city_manage_recycler);
         List<AddedCity> cityList= LitePal.select("cityName").find(AddedCity.class);
         for (AddedCity addedCity:cityList){
             cities.add(addedCity.getCityName());
         }
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         cityManageRecycler.setLayoutManager(layoutManager);
-        cityManageAdapter=new CityManageAdapter(cities);
+        cityManageAdapter = new CityManageAdapter(cities);
         cityManageRecycler.setAdapter(cityManageAdapter);
         cityManageRecycler.setItemAnimator(new DefaultItemAnimator());
         cityManageAdapter.setDeleteClickListener(this);
@@ -62,7 +62,7 @@ public class ManageCityActivity extends AppCompatActivity implements CityManageA
                 startActivity(intent);
             }
         });
-        ImageView back=findViewById(R.id.back);
+        ImageView back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,7 +73,7 @@ public class ManageCityActivity extends AppCompatActivity implements CityManageA
 
     @Override
     public void onItemClick(View view, int position) {
-        String city=cities.get(position);
+        String city = cities.get(position);
         Utility.setCurrentCity(ManageCityActivity.this,city);
         Intent intent=new Intent(ManageCityActivity.this,MainActivity.class);
         startActivity(intent);
@@ -88,8 +88,8 @@ public class ManageCityActivity extends AppCompatActivity implements CityManageA
         LitePal.deleteAll(AddedCity.class,"cityName=?",deletedCity);
         LitePal.deleteAll(ForecastWeather.class,"cityName=?",deletedCity);
         String currentCity=Utility.getCurrentCity(ManageCityActivity.this);
-        if (currentCity!=null){
-            if (currentCity.equals(deletedCity)||cities.isEmpty()){
+        if (currentCity !=  null){
+            if (currentCity.equals(deletedCity) || cities.isEmpty()){
                 Utility.setCurrentCity(ManageCityActivity.this,null);
             }
         }

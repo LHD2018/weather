@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.ViewHolder>implements SlidingButtonView.SlidingButtonListener{
-    private List<String>mCityList=new ArrayList<>();
+    private List<String>mCityList = new ArrayList<>();
     private Context mContext;
     private SlidingViewClickListener deleteClickListener;
     private SlidingButtonView mMenu;
@@ -34,9 +34,9 @@ public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.V
 
         public ViewHolder(View itemView) {
             super(itemView);
-            cityDelete=itemView.findViewById(R.id.city_delete);
-            mCity=itemView.findViewById(R.id.city_manage_text);
-            layoutContent=itemView.findViewById(R.id.layout_content);
+            cityDelete = itemView.findViewById(R.id.city_delete);
+            mCity = itemView.findViewById(R.id.city_manage_text);
+            layoutContent = itemView.findViewById(R.id.layout_content);
             ((SlidingButtonView)itemView).setSlidingButtonListener(CityManageAdapter.this);
         }
     }
@@ -50,9 +50,9 @@ public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.V
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        mContext=parent.getContext();
+        mContext = parent.getContext();
         View view= LayoutInflater.from(mContext).inflate(R.layout.city_manage_item,parent,false);
-        final ViewHolder holder=new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
         holder.mCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,7 +78,7 @@ public class CityManageAdapter extends RecyclerView .Adapter<CityManageAdapter.V
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mCity.setText(mCityList.get(position));
-        holder.layoutContent.getLayoutParams().width= Utility.getScreenWidth(mContext);
+        holder.layoutContent.getLayoutParams().width = Utility.getScreenWidth(mContext);
     }
 
     @Override

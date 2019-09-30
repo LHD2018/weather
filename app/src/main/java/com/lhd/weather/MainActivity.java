@@ -91,11 +91,12 @@ public class MainActivity extends AppCompatActivity {
             String apiKey="HE1807171032311823/24a2d899122b4526b7299924f133c599";
             Utility.setApiKey(MainActivity.this,apiKey);
         }
+        //初始化heweather 接口
         String[] keyStr=Utility.getApiKey(MainActivity.this).split("/");
         HeConfig.init(keyStr[0],keyStr[1]);
         HeConfig.switchToFreeServerNode();
         boolean isDay=Utility.isDay();
-        AppCompatDelegate.setDefaultNightMode(isDay ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+        AppCompatDelegate.setDefaultNightMode(isDay ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);//设置白天夜晚模式
         navigationView=findViewById(R.id.nav_view);
         View headLayout=navigationView.inflateHeaderView(R.layout.nav_head);
         navCityName=headLayout.findViewById(R.id.nav_city);
@@ -176,7 +177,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         currentCityName= Utility.getCurrentCity(this);
-        List<String> permissionList=new ArrayList<>();
+
+        //权限获取
+        List<String> permissionList = new ArrayList<>();
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
             permissionList.add(Manifest.permission.READ_PHONE_STATE);
         }
@@ -184,9 +187,10 @@ public class MainActivity extends AppCompatActivity {
             permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
         }
         if (!permissionList.isEmpty()){
-            String[] permissions=permissionList.toArray(new String[permissionList.size()]);
+            String[] permissions = permissionList.toArray(new String[permissionList.size()]);
             ActivityCompat.requestPermissions(MainActivity.this,permissions,1);
         }
+
         if (currentCityName!=null){
             showWeather(currentCityName);
         }else{
@@ -201,19 +205,19 @@ public class MainActivity extends AppCompatActivity {
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId=item.getItemId();
-                if (itemId== R.id.manager_cities){
-                    Intent intent=new Intent(MainActivity.this,ManageCityActivity.class);
+                int itemId = item.getItemId();
+                if (itemId == R.id.manager_cities){
+                    Intent intent = new Intent(MainActivity.this,ManageCityActivity.class);
                     startActivity(intent);
                     drawerLayout.closeDrawers();
 
                 }
-                if (itemId== R.id.setting){
+                if (itemId == R.id.setting){
                     Intent intent=new Intent(MainActivity.this,SettingActivity.class);
                     startActivity(intent);
 
                 }
-                if (itemId== R.id.about){
+                if (itemId == R.id.about){
                     Intent intent=new Intent(MainActivity.this,AboutActivity.class);
                     startActivity(intent);
 
@@ -221,50 +225,15 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        Intent intent=new Intent(this, UpdateWeatherService.class);
+        //开启自动更新服务
+        Intent intent = new Intent(this, UpdateWeatherService.class);
         startService(intent);
-        /*cloudText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeFloatMenu(addFloat);
-            }
-        });
-        addFloat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (floatIsOpened){
-                    closeFloatMenu(view);
-                }else{
-                    openFloatMenu(view);
-                }
-            }
-        });*/
+
     }
-    /*private void closeFloatMenu(View view){
-        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",-135,20,0);
-        animator.setDuration(500);
-        animator.start();
-        AlphaAnimation animation=new AlphaAnimation(0.7f,0);
-        animation.setDuration(500);
-        cloudText.startAnimation(animation);
-        cloudText.setVisibility(View.GONE);
-        floatIsOpened=false;
-    }
-    private void openFloatMenu(View view){
-        ObjectAnimator animator=ObjectAnimator.ofFloat(view,"rotation",0,-155,-135);
-        animator.setDuration(500);
-        animator.start();
-        cloudText.setVisibility(View.VISIBLE);
-        AlphaAnimation animation=new AlphaAnimation(0,0.7f);
-        animation.setDuration(500);
-        animation.setFillAfter(true);
-        cloudText.setAnimation(animation);
-        floatIsOpened=true;
-    }*/
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode==KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK){
             this.finish();
             return true;
         }
@@ -275,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        currentCityName=Utility.getCurrentCity(MainActivity.this);
+        currentCityName = Utility.getCurrentCity(MainActivity.this);
         if (currentCityName!=null){
             showWeather(currentCityName);
         }
@@ -286,8 +255,8 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode){
             case 1:
                 if (grantResults.length>0){
-                    for (int result:grantResults){
-                        if (result!=PackageManager.PERMISSION_GRANTED){
+                    for (int result : grantResults){
+                        if (result != PackageManager.PERMISSION_GRANTED){
                             Toast.makeText(this,"你需要同意这些权限",Toast.LENGTH_SHORT).show();
                             finish();
                             return;
@@ -299,10 +268,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
         }
     }
-
+//显示天气情况
     private void showWeather(String city){
         aqiLayout.setVisibility(View.VISIBLE);
-        List<AddedCity>currentCityList =LitePal.where("cityName=?",city).find(AddedCity.class);
+        List<AddedCity> currentCityList = LitePal.where("cityName=?",city).find(AddedCity.class);
         if (currentCityList.isEmpty()){
             return;
         }

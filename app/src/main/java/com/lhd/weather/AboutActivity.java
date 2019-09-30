@@ -39,7 +39,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
         back.setOnClickListener(this);
         PackageManager manager=this.getPackageManager();
         try {
-            PackageInfo info=manager.getPackageInfo(this.getPackageName(),0);
+            PackageInfo info = manager.getPackageInfo(this.getPackageName(),0);
             versionCode.setText("Version "+info.versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -65,12 +65,12 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.update_app:
                 Uri updateUri=Uri.parse("https://github.com/LHD2018/weather/releases");
-                Intent intent1=new Intent(Intent.ACTION_VIEW,updateUri);
+                Intent intent1 = new Intent(Intent.ACTION_VIEW,updateUri);
                 startActivity(intent1);
                 break;
             case R.id.open_github:
                 Uri githubUri=Uri.parse("https://github.com/LHD2018/weather");
-                Intent intent2=new Intent(Intent.ACTION_VIEW,githubUri);
+                Intent intent2 = new Intent(Intent.ACTION_VIEW,githubUri);
                 startActivity(intent2);
                 break;
             case R.id.statement:
